@@ -16,15 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	DriveSystem driveMode;
-	Talon flipperTalon;
-	Talon leftClaw;
-	Talon rightClaw;
-	Talon leftLoader;
-	Talon rightLoader;
-	boolean stateOfFlipper = true;
-	boolean stateOfClaw = true;
-	boolean previousStateOfClaw = false;
-	boolean stateOfLoader = false;
+
+	Flipper flipper;
+	Claw claw;
+	Loader loader;
 	double leftStickRawValue;
 	double rightStickRawValue;
 	Joystick myJoystick;
@@ -41,11 +36,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		
-		flipperTalon = new Talon(5);
-		leftClaw = new Talon(9);
-		rightClaw = new Talon(8);
-		leftLoader = new Talon(7);
-		rightLoader = new Talon(6);
+		flipper = new Flipper();
+		claw = new Claw();
+		loader = new Loader();
 		myJoystick = new Joystick(0);
 		driveMode = new DriveSystem();
 		chooser.addDefault("Default Auto", defaultAuto);
@@ -96,53 +89,20 @@ public class Robot extends IterativeRobot {
 	 * Hold B Button: Ball loading mechanism
 	 * Hold Right Trigger: Launch Ball
 	 */
+	
 	@Override
 	public void teleopPeriodic() {
-		
 
-		
 		driveMode.tankDrive(myJoystick.getRawAxis(1) , myJoystick.getRawAxis(4));
 		
-		if (myJoystick.getRawAxis(5) == 1) {
-			flipperTalon.set(0);
-			
-		}else {
-			flipperTalon.set(1);
-			
-		}
+		flipper.doStuff(myJoystick.getRawAxis(5));
+
+		claw.doStuff(myJoystick.getRawButton(1));
 		
-		if (myJoystick.getRawButton(1) && stateOfClaw && !previousStateOfClaw) {
-			leftClaw.set(-0.5);
-			rightClaw.set(0.5);
-			stateOfClaw = false;
-			
-		}else if (myJoystick.getRawButton(1) && !stateOfClaw && !previousStateOfClaw) {
-			leftClaw.set(0.5);
-			rightClaw.set(-0.5);
-			stateOfClaw = true;
-			
-		}
-		
-		if (myJoystick.getRawButton(2) && stateOfClaw && !stateOfLoader) {
-			leftLoader.set(-2);
-			rightLoader.set(-2);
-			stateOfLoader = true;
-			System.out.println("Test One");
-			
-		} else if (!myJoystick.getRawButton(2) && stateOfLoader){
-			leftLoader.set(0.4);
-			rightLoader.set(0.4);
-			stateOfLoader = false;
-			System.out.println("Test Two");
-			
-		}
-		
-		previousStateOfClaw = myJoystick.getRawButton(1);
+		loader.doStuff(myJoystick.getRawButton(1) , myJoystick.getRawButton(2));
 		
 	}
 	
-
-
 	/**
 	 * This function is called periodically during test mode
 	 */
