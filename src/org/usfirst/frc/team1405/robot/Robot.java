@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	DriveSystem driveMode;
-
+	AutoDrive auto;
 	Flipper flipper;
 	Claw claw;
 	Loader loader;
@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		
+		auto = new AutoDrive();
 		flipper = new Flipper();
 		claw = new Claw();
 		loader = new Loader();
